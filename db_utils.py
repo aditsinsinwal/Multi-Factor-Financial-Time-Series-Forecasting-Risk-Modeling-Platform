@@ -145,11 +145,3 @@ if __name__ == "__main__":
     print(px.head())
     print(mc.head())
     print(joined.head())
-
-
-
-
-
-
-
-Ask ChatGPT
