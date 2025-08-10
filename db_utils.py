@@ -3,12 +3,12 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 from typing import Iterable, Optional, Union
 
-# ---- Engine ----
+#Engine 
 def get_engine(db_url: str = "sqlite:///market_data.db"):
     """Return a SQLAlchemy engine."""
     return create_engine(db_url, future=True)
 
-# ---- Generic IO ----
+#Generic IO 
 def write_df(df: pd.DataFrame, table: str, db_url: str, if_exists: str = "append"):
     """Dump a DataFrame to SQL."""
     eng = get_engine(db_url)
@@ -25,7 +25,7 @@ def list_tables(db_url: str) -> list[str]:
             rows = conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'"))
         return [r[0] for r in rows]
 
-# ---- Symbols & timestamps ----
+# Symbols & timestamps 
 def get_symbols(db_url: str) -> list[str]:
     """All symbols in price_data."""
     eng = get_engine(db_url)
@@ -43,7 +43,7 @@ def last_price_timestamp(db_url: str, symbol: str) -> Optional[pd.Timestamp]:
     ts = row[0]
     return pd.to_datetime(ts) if ts is not None else None
 
-# ---- Prices ----
+# Prices 
 def read_prices(
     db_url: str,
     symbols: Optional[Iterable[str]] = None,
@@ -92,7 +92,7 @@ def resample_prices(prices_wide: pd.DataFrame, rule: str = "B") -> pd.DataFrame:
     """
     return prices_wide.resample(rule).last().ffill()
 
-# ---- Macro ----
+# Macro 
 def read_macro(
     db_url: str,
     start: Optional[Union[str, pd.Timestamp]] = None,
@@ -119,7 +119,7 @@ def read_macro(
         df[c] = pd.to_numeric(df[c], errors="coerce")
     return df
 
-# ---- Joins ----
+# Joins
 def join_prices_macro(
     prices_wide: pd.DataFrame, macro_df: pd.DataFrame, how: str = "left"
 ) -> pd.DataFrame:
@@ -129,7 +129,7 @@ def join_prices_macro(
     out[macro_df.columns] = out[macro_df.columns].ffill()
     return out
 
-# ---- Quick checks ----
+# Quick checks 
 def head(db_url: str, table: str, n: int = 5) -> pd.DataFrame:
     """Peek at a table."""
     eng = get_engine(db_url)
