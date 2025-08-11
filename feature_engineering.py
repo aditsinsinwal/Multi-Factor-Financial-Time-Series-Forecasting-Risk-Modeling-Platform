@@ -5,7 +5,7 @@ from typing import Iterable, Optional, Sequence
 from db_utils import read_prices, read_macro, join_prices_macro, write_df
 
 
-# ---------- core indicators ----------
+#core indicators 
 
 def pct_returns(prices: pd.Series, periods: Sequence[int] = (1, 5, 10)) -> pd.DataFrame:
     out = {}
@@ -51,7 +51,7 @@ def add_lags(df: pd.DataFrame, cols: Iterable[str], lags: Sequence[int] = (1, 2,
     return df
 
 
-# ---------- feature builder ----------
+#feature builder 
 
 def build_features(
     db_url: str = "sqlite:///market_data.db",
@@ -64,10 +64,10 @@ def build_features(
     """
     Returns tidy features with one row per (date, symbol).
     """
-    # prices: wide matrix (date x symbol)
+    # prices: wide matrix (date times symbol)
     prices_wide = read_prices(db_url, symbols=symbols, start=start, end=end, price_col=price_col, wide=True)
 
-    # macro (optional)
+    # macro 
     macro = read_macro(db_url, start=start, end=end) if add_macro else None
     if macro is not None and not macro.empty:
         joined = join_prices_macro(prices_wide, macro)  # daily align + ffill macro
@@ -105,7 +105,7 @@ def build_features(
     return out
 
 
-# ---------- helpers ----------
+# helpers fxn
 
 def train_val_test_split(
     df: pd.DataFrame,
@@ -149,15 +149,15 @@ def save_features_to_db(features: pd.DataFrame, db_url: str = "sqlite:///market_
     write_df(features, table, db_url, if_exists="append")
 
 
-# ---------- run as script ----------
+#run as script 
 
 if __name__ == "__main__":
     DB = "sqlite:///market_data.db"
-    # build
+    #build
     feats = build_features(DB, symbols=None, start="2016-01-01", price_col="Adj Close", add_macro=True)
-    # create a supervised label (predict 1d return)
+    #create a supervised label (predict 1d return)
     sup = to_supervised(feats, target_col="ret_1d", horizon=1, drop_cols=["px"])
-    # optional: save
+    #save
     save_features_to_db(sup, DB, table="features")
     print("Features shape:", sup.shape)
     print(sup.head())
