@@ -6,7 +6,6 @@ from db_utils import read_prices, read_macro, join_prices_macro, write_df
 
 
 #core indicators 
-
 def pct_returns(prices: pd.Series, periods: Sequence[int] = (1, 5, 10)) -> pd.DataFrame:
     out = {}
     for p in periods:
@@ -52,7 +51,6 @@ def add_lags(df: pd.DataFrame, cols: Iterable[str], lags: Sequence[int] = (1, 2,
 
 
 #feature builder 
-
 def build_features(
     db_url: str = "sqlite:///market_data.db",
     symbols: Optional[Iterable[str]] = None,
@@ -106,7 +104,6 @@ def build_features(
 
 
 # helpers fxn
-
 def train_val_test_split(
     df: pd.DataFrame,
     date_col: str = "date",
