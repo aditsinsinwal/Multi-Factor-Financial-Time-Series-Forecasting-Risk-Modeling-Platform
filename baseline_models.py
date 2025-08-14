@@ -19,7 +19,7 @@ except Exception:
     warnings.warn("GARCH disabled: install 'arch' to enable.")
 
 
-# ---------- helpers ----------
+# ---------- helpers functions----------
 
 def to_returns(px: pd.Series, log: bool = True) -> pd.Series:
     r = np.log(px).diff() if log else px.pct_change()
